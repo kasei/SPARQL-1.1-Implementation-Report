@@ -1,0 +1,3 @@
+http://librdf.org/2011/08-testing/earl.rdf
+http://kasei.us/code/rdf-query/dawg11/earl-eval-11.ttl
+http://kasei.us/code/rdf-query/dawg11/earl-syntax-11.ttl
