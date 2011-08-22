@@ -14,18 +14,22 @@ use RDF::Trine::Error qw(:try);
 use Scalar::Util qw(blessed);
 use HTML::Entities;
 
-my $doap	= RDF::Trine::Namespace->new( 'http://usefulinc.com/ns/doap#' );
-my $mf		= RDF::Trine::Namespace->new( 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#' );
 
+
+my $url_file	= shift || 'reports.txt';
+my $manifestdir	= shift || '/Users/samofool/data/prog/git/perlrdf/RDF-Query/xt/dawg11';
+
+
+my $doap		= RDF::Trine::Namespace->new( 'http://usefulinc.com/ns/doap#' );
+my $mf			= RDF::Trine::Namespace->new( 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#' );
+my $date		= scalar(gmtime) . ' GMT';
 my $exists		= (-r 'sparql.sqlite');
-my $manifestdir	= '/Users/samofool/data/prog/git/perlrdf/RDF-Query/xt/dawg11/';
 my @manifests	= glob( "${manifestdir}/*/manifest.ttl" );
-my $store	= RDF::Trine::Store::DBI::SQLite->new('model', 'dbi:SQLite:dbname=sparql.sqlite', '', '');
-my $model	= RDF::Trine::Model->new( $store );
-my $parser	= RDF::Trine::Parser->new('turtle');
+my $store		= RDF::Trine::Store::DBI::SQLite->new('model', 'dbi:SQLite:dbname=sparql.sqlite', '', '');
+my $model		= RDF::Trine::Model->new( $store );
+my $parser		= RDF::Trine::Parser->new('turtle');
 
 my @sources;
-my $url_file	= shift || 'reports.txt';
 open( my $fh, '<:utf8', $url_file ) or die $!;
 while (defined(my $u = <$fh>)) {
 	chomp($u);
@@ -160,6 +164,7 @@ print <<"END";
 			td.fail { background-color: #f00; }
 			td.Approved { background-color: #0f0; }
 			td.NotClassified { background-color: #ff0; }
+			.foot { font-style: italic }
 /* ]]> */
 </style></head>
 <body>
@@ -249,6 +254,7 @@ foreach my $u (@sources) {
 print qq[</ul>\n];
 
 print <<"END";
+<p class="foot">$date</class>
 </body>
 </html>
 END
