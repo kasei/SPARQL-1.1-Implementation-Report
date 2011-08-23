@@ -15,10 +15,8 @@ use Scalar::Util qw(blessed);
 use HTML::Entities;
 
 
-
 my $url_file	= shift || 'reports.txt';
 my $manifestdir	= shift || '/Users/samofool/data/prog/git/perlrdf/RDF-Query/xt/dawg11';
-
 
 my $doap		= RDF::Trine::Namespace->new( 'http://usefulinc.com/ns/doap#' );
 my $mf			= RDF::Trine::Namespace->new( 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#' );
@@ -133,6 +131,14 @@ END
 			$software{ $s }{ name }	= encode_entities($names[0]->literal_value);
 		} else {
 			$software{ $s }{ name }	= encode_entities($s);
+		}
+		
+		my @h			= $model->objects_for_predicate_list( iri($s), $doap->homepage );
+		my @homepages	= grep { blessed($_) and $_->isa('RDF::Trine::Node::Resource') } @h;
+		if (@homepages) {
+			my $h		= $homepages[0]->uri_value;
+			my $name	= $software{ $s }{ name };
+			$software{ $s }{ name }	= qq[<a href="$h">$name</a>];
 		}
 	}
 }
@@ -267,6 +273,6 @@ sub strip_test {
 	my $t	= shift;
 	$t	=~ s{http://www.w3.org/2001/sw/DataAccess/tests/data-r2/}{};
 	$t	=~ s{http://www.w3.org/2009/sparql/docs/tests/data-sparql11/}{};
-	$t	=~ s{file:///Users/samofool/data/prog/git/perlrdf/RDF-Query/xt/dawg11/}{};
+#	$t	=~ s{file:///Users/samofool/data/prog/git/perlrdf/RDF-Query/xt/dawg11/}{};
 	return $t;
 }
