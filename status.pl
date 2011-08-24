@@ -31,6 +31,8 @@ my @sources;
 open( my $fh, '<:utf8', $url_file ) or die $!;
 while (defined(my $u = <$fh>)) {
 	chomp($u);
+	next if (substr($u,0,1) eq '#');
+	next if ($u !~ /\S/);
 	push(@sources, $u);
 }
 close($fh);

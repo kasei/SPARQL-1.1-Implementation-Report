@@ -1,3 +1,19 @@
+# Rasqal:
 http://librdf.org/2011/08-testing/earl.rdf
+
+# RDF::Query:
 http://kasei.us/code/rdf-query/dawg11/earl-eval-11.ttl
 http://kasei.us/code/rdf-query/dawg11/earl-syntax-11.ttl
+
+# Missing implementations:
+# 4store
+# AllegroGraph
+# Anzo Glitter
+# ARQ
+# Corese
+# Dydra
+# Mulgara
+# Sesame
+# Stardog
+# Virtuoso
+# ???
