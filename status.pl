@@ -282,7 +282,6 @@ END
 
 	{
 		print qq[<tr><th colspan="$columns">Required Tests</td></tr>\n];
-		my $total	= scalar(@{[ keys %{ $results{ tests }{ required } } ]});
 		foreach my $t (sort keys %{ $results{ tests }{ required } }) {
 # 			warn "# test $t\n";
 			my $a	= $results{ tests }{ required }{ $t }{ approval };
@@ -299,8 +298,7 @@ END
 		}
 		print qq[<tr><td colspan="2">Total &mdash; %Total/%Run (Pass/Run/Total)</td>\n];
 		foreach my $s (@software) {
-			my $run		= $results{ software }{ $s }{ required } || 0;
-			my $pass	= $results{ software }{ $s }{ required_pass } || 0;
+			my ($total, $run, $pass)	= get_spec_totals_for_software( \%results, $s );
 			my $rperc	= ($run == 0) ? 'n/a' : sprintf('%.1f%%', 100*($pass/$run));
 			my $tperc	= ($total == 0) ? 'n/a' : sprintf('%.1f%%', 100*($pass/$total));
 			print qq[\t<td><span title="($pass/$run/$total)">$tperc/$rperc</span></td>\n];
@@ -344,6 +342,15 @@ END
 		}
 	}
 	print qq[</table>\n];
+}
+
+sub get_spec_totals_for_software {
+	my $results		= shift;
+	my $software	= shift;
+	my $total		= scalar(@{[ keys %{ $results->{ tests }{ required } } ]});
+	my $run			= $results->{ software }{ $software }{ required } || 0;
+	my $pass		= $results->{ software }{ $software }{ required_pass } || 0;
+	return ($total, $run, $pass);
 }
 
 sub print_html_head {
