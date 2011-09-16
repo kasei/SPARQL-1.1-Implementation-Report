@@ -118,6 +118,27 @@ foreach my $spec (@specs) {
 	}
 }
 
+my %requirements	= get_requirements( $model );
+my @software		= get_software( $model );
+my @slist			= reverse sort @specs;
+print_html_head(\@slist, \%specs);
+foreach my $spec (@slist) {
+	print_spec_test_table($model, $spec, \%specs, \@software, \%requirements);
+}
+print qq[<p>Sources:</p>\n<ul>\n];
+foreach my $u (@sources) {
+	print qq[<li><a href="$u">] . encode_entities($u) . qq[</a></li>\n];
+}
+print qq[</ul>\n];
+print_html_foot();
+
+
+
+
+
+################################################################################
+
+
 
 sub get_requirements {
 	my $model	= shift;
@@ -278,15 +299,15 @@ END
 		}
 		print qq[<tr><td colspan="2">Total &mdash; %Total/%Run (Pass/Run/Total)</td>\n];
 		foreach my $s (@software) {
-			my $run		= $results{ software }{ $s }{ required };
-			my $pass	= $results{ software }{ $s }{ required_pass };
+			my $run		= $results{ software }{ $s }{ required } || 0;
+			my $pass	= $results{ software }{ $s }{ required_pass } || 0;
 			my $rperc	= ($run == 0) ? 'n/a' : sprintf('%.1f%%', 100*($pass/$run));
 			my $tperc	= ($total == 0) ? 'n/a' : sprintf('%.1f%%', 100*($pass/$total));
 			print qq[\t<td><span title="($pass/$run/$total)">$tperc/$rperc</span></td>\n];
 		}
 		print qq[</tr>\n];
 	}
-
+	
 	
 	foreach my $req (sort keys %{ $requirements->{groups} }) {
 		my $name	= $req;
@@ -389,24 +410,3 @@ sub strip_test {
 #	$t	=~ s{file:///Users/samofool/data/prog/git/perlrdf/RDF-Query/xt/dawg11/}{};
 	return $t;
 }
-
-
-
-
-
-my %requirements	= get_requirements( $model );
-my @software		= get_software( $model );
-my @slist			= reverse sort @specs;
-print_html_head(\@slist, \%specs);
-foreach my $spec (@slist) {
-	print_spec_test_table($model, $spec, \%specs, \@software, \%requirements);
-}
-print qq[<p>Sources:</p>\n<ul>\n];
-foreach my $u (@sources) {
-	print qq[<li><a href="$u">] . encode_entities($u) . qq[</a></li>\n];
-}
-print qq[</ul>\n];
-print_html_foot();
-
-
-
