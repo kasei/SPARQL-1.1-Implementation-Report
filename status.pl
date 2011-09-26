@@ -208,7 +208,8 @@ END
 }
 
 sub print_html_foot {
-	print <<"END";
+	print <<'END';
+$Id: $
 </body>
 </html>
 END
