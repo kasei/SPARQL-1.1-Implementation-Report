@@ -23,7 +23,6 @@ sub new {
 	my $sources			= shift || [];
 	my $manifestdir		= shift;
 	my $self			= bless({ sources => $sources, manifestdir => $manifestdir }, $class);
-	$self->{'exists'}	= (-r 'sparql.sqlite');
 	my $store			= RDF::Trine::Store::DBI::SQLite->new('model', 'dbi:SQLite:dbname=sparql.sqlite', '', '');
 	$self->{model}		= RDF::Trine::Model->new( $store );
 	return $self;
@@ -61,13 +60,11 @@ sub load_data {
 	}
 	
 	$self->get_manifests();
+	$self->load_manifest_data;
+	$self->load_source_data;
 	$self->get_software();
 	$self->get_test_status();
 	$self->get_test_results();
-	unless ($self->{'exists'}) {
-		$self->load_manifest_data;
-		$self->load_source_data;
-	}
 }
 
 sub load_manifest_data {
@@ -83,6 +80,7 @@ sub load_manifest_data {
 			$parser->parse_file_into_model( $base, $file, $model, context => iri('http://myrdf.us/ns/sparql/Manifests') );
 		} catch Error with {
 			my $e	= shift;
+			warn $e->text;
 		};
 	}
 }
@@ -222,7 +220,7 @@ sub get_test_status {
 	my $self	= shift;
 	my $model	= $self->model;
 	{
-		my $iter	= $model->get_statements( undef, $mf->requires );
+		my $iter	= $model->get_statements( undef, $mf->requires, undef, iri('http://myrdf.us/ns/sparql/Manifests') );
 		while (my $st = $iter->next) {
 			my $test	= $st->subject->uri_value;
 			my $req		= $st->object->uri_value;
