@@ -188,7 +188,7 @@ sub manifest_tests {
 	my $self		= shift;
 	my $man			= shift;
 	my $model		= $self->model;
-	my ($test_list)	= $model->objects( $man, $mf->entries );
+	my ($test_list)	= $model->objects( $man, $mf->entries, iri('http://myrdf.us/ns/sparql/Manifests') );
 	my @tests		= $model->get_list( $test_list );
 	return sort { $a->uri_value cmp $b->uri_value } @tests;
 }
@@ -213,7 +213,7 @@ sub software_test_result {
 	my $software	= shift;
 	my $test		= shift;
 	my $model		= $self->model;
-	return $self->{ test_results }{ software }{ $software->uri_value }{ $test->uri_value };
+	return $self->{ test_results }{ software }{ $software->as_string }{ $test->uri_value };
 }
 
 sub get_test_status {
@@ -263,7 +263,7 @@ END
 	while (my $r = $iter->next) {
 		my $test		= $r->{test}->uri_value;
 		my $outcome		= $r->{outcome}->uri_value;
-		my $software	= $r->{software}->uri_value;
+		my $software	= $r->{software}->as_string;
 		push( @{ $self->{ test_results }{raw} }, [$test, $outcome, $software] );
 		$self->{ test_results }{ software }{ $software }{ $test }	= $outcome;
 		$self->{ test_results }{ test }{ $test }{ $software }		= $outcome;
@@ -277,19 +277,20 @@ sub get_software {
 	{
 		my $iter	= $model->get_statements( undef, iri('http://www.w3.org/ns/earl#subject'), undef, iri('http://myrdf.us/ns/sparql/Implementations') );
 		while (my $st = $iter->next) {
-			my $s	= $st->object->uri_value;
-			$software{ $s }++;
+			my $soft	= $st->object;
+			my $s		= $soft->as_string;
+			$software{ $s }	= $soft;
 		}
 	}
-	$self->{software}	= [ map { iri($_) } keys %software ];
+	$self->{software}	= [ values %software ];
 	
 	foreach my $s (@{ $self->{software} }) {
 # 		push(@names, $model->objects( 
 		my @names	= grep { blessed($_) and $_->isa('RDF::Trine::Node::Literal') } $model->objects_for_predicate_list( $s, $doap->name, $foaf->name, $rdfs->label );
 		if (@names) {
-			$self->{ software_names }{ $s->uri_value }	= $names[0]->literal_value;
+			$self->{ software_names }{ $s->as_string }	= $names[0]->literal_value;
 		} else {
-			$self->{ software_names }{ $s->uri_value }	= $s->uri_value;
+			$self->{ software_names }{ $s->as_string }	= $s->uri_value;
 		}
 	}
 }
@@ -302,8 +303,7 @@ sub software {
 sub software_name {
 	my $self	= shift;
 	my $s		= shift;
-	my $uri		= $s->uri_value;
-	return $self->{ software_names }{ $uri };
+	return $self->{ software_names }{ $s->as_string };
 }
 
 1;

@@ -56,7 +56,7 @@ print_html_head($r);
 
 # warn "Summary\n";
 foreach my $s ($r->software) {
-	my $software	= $s->uri_value;
+	my $software	= $s->as_string;
 # 	warn "\t$software\n";
 	foreach my $spec ($r->specs) {
 # 		warn "\t\t$spec results...\n";
@@ -79,7 +79,7 @@ foreach my $spec ($r->specs) {
 		<th>Status</th>
 END
 	foreach my $s ($r->software) {
-		my $software	= $s->uri_value;
+		my $software	= $s->as_string;
 		my $name		= $r->software_name( $s );
 		print "\t\t<th>$name</th>\n";
 	}
