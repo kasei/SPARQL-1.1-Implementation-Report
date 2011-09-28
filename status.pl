@@ -22,23 +22,9 @@ while (defined(my $u = <$fh>)) {
 }
 close($fh);
 
+unlink('sparql.sqlite');
 my $r	= SPARQLReport->new( \@sources, $manifestdir );
 $r->load_data();
-
-
-
-# foreach my $spec ($r->specs) {
-# 	warn "*** spec $spec\n";
-# 	foreach my $man ($r->spec_manifests( $spec )) {
-# 		warn "      manifest $man\n";
-# 		my $m		= $self->manifest_iri( $man );
-# 		my @tests	= $r->manifest_tests( $m );
-# 		foreach my $test (@tests) {
-# 			warn "        test $test\n";
-# # 			$specs{ $spec }{ tests }{ $test->uri_value }++;
-# 		}
-# 	}
-# }
 
 my %software_ids;
 foreach my $s ($r->software) {
@@ -50,107 +36,152 @@ foreach my $s ($r->software) {
 	$software_ids{ $s }	= "impl-$id";
 }
 
-
 print_html_head($r);
-
-
-# warn "Summary\n";
-foreach my $s ($r->software) {
-	my $software	= $s->as_string;
-# 	warn "\t$software\n";
-	foreach my $spec ($r->specs) {
-# 		warn "\t\t$spec results...\n";
-# 		print table cell with software-spec conformance
-	}
-}
-
-my $width	= 2 + scalar(@{ [ $r->software ] });
-
-# warn "Specs\n";
-print qq[<table>\n];
-foreach my $spec ($r->specs) {
-# 	warn "\t$spec\n";
-	my $specname	= $r->spec_name( $spec );
-	my $specid		= $r->spec_id( $spec );
-	print <<"END";
-	<tr><th colspan="${width}"><h3 id="$specid">$specname</h3></th></tr>
-	<tr>
-		<th>Test</th>
-		<th>Status</th>
-END
-	foreach my $s ($r->software) {
-		my $software	= $s->as_string;
-		my $name		= $r->software_name( $s );
-		print "\t\t<th>$name</th>\n";
-	}
-	print "\t</tr>\n";
-	
-	my $total	= 0;
-	my %software_totals;
-	my %software_passes;
-	foreach my $t ($r->spec_tests( $spec )) {
-		$total++;
-		next if ($r->test_is_optional( $t ));
-		my $iri		= $t->uri_value;
-		my $name	= strip_test($iri);
-		my $status	= $r->test_approval_status( $t );
-		$status	=~ s{http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#}{};
-# 		warn "\t\t" . $t->uri_value . "\n";
-		print <<"END";
-	<tr>
-		<td>$name</td>
-		<td class="${status}">${status}</td>
-END
-		foreach my $software ($r->software) {
-			my $sid	= $software_ids{ $software };
-			my $outcome	= $r->software_test_result( $software, $t );
-			if ($outcome) {
-				$outcome	=~ s{http://www.w3.org/ns/earl#}{};
-				$software_totals{ $software }++;
-				$software_passes{ $software }++ if ($outcome eq 'pass');
-				print qq[\t\t<td class="$sid ${outcome}">${outcome}</td>\n];
-			} else {
-				print qq[\t\t<td class="$sid notrun">not run</td>\n];
-			}
-		}
-		print "\t</tr>\n";
-	}
-
-
-	print qq[<tr><td colspan="2">Total &mdash; %Total/%Run (Pass/Run/Total)</td>\n];
-	foreach my $software ($r->software) {
-		my $sid		= $software_ids{ $software };
-		my $run		= $software_totals{ $software } || 0;
-		my $pass	= $software_passes{ $software } || 0;
-		my $rperc	= ($run == 0) ? 'n/a' : sprintf('%.1f%%', 100*($pass/$run));
-		my $tperc	= ($total == 0) ? 'n/a' : sprintf('%.1f%%', 100*($pass/$total));
-		print qq[\t<td class="$sid"><span title="($pass/$run/$total)">$tperc/$rperc</span></td>\n];
-	}
-	print qq[</tr>\n];
-
-# 	print totals of required software-test conformance
-# 	foreach optional test group in spec
-# 		foreach optional test
-# 			print row header cells with test name and approval status
-# 			foreach software
-# 				print table cell with software-test conformance
-# 		print totals of optional group software-test conformance
-}
-
-print qq[</table>\n];
-
-print "<p>Sources:</p>\n<ul>\n";
-foreach my $source (@sources) {
-	print "\t<li>$source</li>\n";
-}
-print "</ul>\n";
-
-print qq[<p class="foot">$date</p>\n];
-
-print_html_foot();
+implementation_summary($r);
+tests_table($r);
+sources();
+print_html_foot($date);
 
 
 ################################################################################
+
+sub sources {
+	print "<p>Sources:</p>\n<ul>\n";
+	foreach my $source (@sources) {
+		print qq[\t<li><a href="$source">$source</a></li>\n];
+	}
+	print "</ul>\n";
+}
+
+sub implementation_summary {
+	my $r	= shift;
+	
+	print qq[<h3 id="summary">Implementation Summary</h3>];
+	print qq[<table>\n\t<tr>\n\t\t<th>Spec</th>\n];
+	foreach my $s ($r->software) {
+		my $name		= $r->software_name( $s );
+		print qq[\t\t<th>$name</td>\n];
+	}
+	print qq[\t</tr>\n];
+	
+	foreach my $spec ($r->specs) {
+		my $specname	= $r->spec_name( $spec );
+		my $specid		= $r->spec_id( $spec );
+		print qq[\t<tr>\n\t\t<td><a href="#$specid">$specname</a></td>\n];
+
+		my $total	= 0;
+		my %software_totals;
+		my %software_passes;
+		foreach my $t ($r->spec_tests( $spec )) {
+			$total++;
+			next if ($r->test_is_optional( $t ));
+			my $iri		= $t->uri_value;
+			my $name	= strip_test($iri);
+			foreach my $software ($r->software) {
+				my $sid	= $software_ids{ $software };
+				my $outcome	= $r->software_test_result( $software, $t );
+				if ($outcome) {
+					$outcome	=~ s{http://www.w3.org/ns/earl#}{};
+					$software_totals{ $software }++;
+					$software_passes{ $software }++ if ($outcome eq 'pass');
+				}
+			}
+		}
+		
+# 		print qq[\t\t<td colspan="2">Total &mdash; %Total/%Run (Pass/Run/Total)</td>\n];
+		foreach my $software ($r->software) {
+			my $sid		= $software_ids{ $software };
+			my $run		= $software_totals{ $software } || 0;
+			my $pass	= $software_passes{ $software } || 0;
+			my $num		= 100*($pass/$total);
+			my $tperc	= ($run == 0) ? 'n/a' : sprintf('%.1f%%', $num);
+			my $bucket	= int($num/10);
+			my $grade_class	= ($run) ? "b$bucket" : '';
+			print qq[\t<td class="$sid $grade_class">$tperc</td>\n];
+		}
+		print qq[</tr>\n];
+	}
+	print qq[</table>\n];	
+}
+
+sub tests_table {
+	my $r	= shift;
+	my $width	= 2 + scalar(@{ [ $r->software ] });
+	
+	# warn "Specs\n";
+	print qq[<h3 id="tests">Tests</h3>];
+	print qq[<table>\n];
+	foreach my $spec ($r->specs) {
+	# 	warn "\t$spec\n";
+		my $specname	= $r->spec_name( $spec );
+		my $specid		= $r->spec_id( $spec );
+		print <<"END";
+		<tr><th colspan="${width}"><h3 id="$specid">$specname</h3></th></tr>
+		<tr>
+			<th>Test</th>
+			<th>Status</th>
+END
+		foreach my $s ($r->software) {
+			my $software	= $s->as_string;
+			my $name		= $r->software_name( $s );
+			print "\t\t<th>$name</th>\n";
+		}
+		print "\t</tr>\n";
+		
+		my $total	= 0;
+		my %software_totals;
+		my %software_passes;
+		foreach my $t ($r->spec_tests( $spec )) {
+			$total++;
+			next if ($r->test_is_optional( $t ));
+			my $iri		= $t->uri_value;
+			my $name	= strip_test($iri);
+			my $status	= $r->test_approval_status( $t );
+			$status	=~ s{http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#}{};
+	# 		warn "\t\t" . $t->uri_value . "\n";
+			print <<"END";
+		<tr>
+			<td>$name</td>
+			<td class="${status}">${status}</td>
+END
+			foreach my $software ($r->software) {
+				my $sid	= $software_ids{ $software };
+				my $outcome	= $r->software_test_result( $software, $t );
+				if ($outcome) {
+					$outcome	=~ s{http://www.w3.org/ns/earl#}{};
+					$software_totals{ $software }++;
+					$software_passes{ $software }++ if ($outcome eq 'pass');
+					print qq[\t\t<td class="$sid ${outcome}">${outcome}</td>\n];
+				} else {
+					print qq[\t\t<td class="$sid notrun">not run</td>\n];
+				}
+			}
+			print "\t</tr>\n";
+		}
+	
+	
+		print qq[<tr><td colspan="2">Total &mdash; %Total/%Run (Pass/Run/Total)</td>\n];
+		foreach my $software ($r->software) {
+			my $sid		= $software_ids{ $software };
+			my $run		= $software_totals{ $software } || 0;
+			my $pass	= $software_passes{ $software } || 0;
+			my $rperc	= ($run == 0) ? 'n/a' : sprintf('%.1f%%', 100*($pass/$run));
+			my $tperc	= ($total == 0) ? 'n/a' : sprintf('%.1f%%', 100*($pass/$total));
+			print qq[\t<td class="$sid"><span title="($pass/$run/$total)">$tperc/$rperc</span></td>\n];
+		}
+		print qq[</tr>\n];
+	
+	# 	print totals of required software-test conformance
+	# 	foreach optional test group in spec
+	# 		foreach optional test
+	# 			print row header cells with test name and approval status
+	# 			foreach software
+	# 				print table cell with software-test conformance
+	# 		print totals of optional group software-test conformance
+	}
+	
+	print qq[</table>\n];
+}
 
 sub strip_test {
 	my $t	= shift;
@@ -189,12 +220,34 @@ sub print_html_head {
 			td.Approved { background-color: #0f0; }
 			td.NotClassified { background-color: #ff0; }
 			.foot { font-style: italic }
+			
+			/* red */
+			.b0 { background-color:  #f00; }
+			
+			/* orange */
+			.b1 { background-color:  #b22; }
+			.b2 { background-color:  #f40; }
+			.b3 { background-color:  #f80; }
+			
+			/* yellow */
+			.b4 { background-color:  #da0; }
+			.b5 { background-color:  #dd0; }
+			.b6 { background-color:  #ff0; }
+			
+			/* green */
+			.b7 { background-color:  #9c0; }
+			.b8 { background-color:  #9e0; }
+			.b9 { background-color:  #7e0; }
+			
+			/* green */
+			.b10 { background-color: #0f0; }
 /* ]]> */
 </style></head>
 <body>
 <h1>SPARQL 1.1 Test Results</h1>
 <ul>
-	<li>Specifications<ul>
+	<li><a href="#summary">Implementation Summary</a></li>
+	<li><a href="#tests">Tests by Specifications</a><ul>
 		
 END
 
@@ -208,6 +261,8 @@ END
 }
 
 sub print_html_foot {
+	my $date	= shift;
+	print qq[<p class="foot">$date</p>\n];
 	print <<'END';
 $Id: $
 </body>
