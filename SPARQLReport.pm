@@ -7,7 +7,7 @@ use v5.12;
 use File::Spec;
 use RDF::Redland;
 use RDF::Trine qw(iri);
-use RDF::Trine::Namespace qw(foaf rdfs);
+use RDF::Trine::Namespace qw(foaf rdf rdfs);
 use RDF::Query;
 use RDF::Trine::Error qw(:try);
 use Scalar::Util qw(blessed);
@@ -64,6 +64,7 @@ sub load_data {
 	$self->load_source_data;
 	$self->get_software();
 	$self->get_test_status();
+	$self->get_test_details();
 	$self->get_test_results();
 }
 
@@ -208,6 +209,20 @@ sub test_approval_status {
 	return $self->{ test_approval }{ $iri }
 }
 
+sub test_name {
+	my $self	= shift;
+	my $test	= shift;
+	my $iri		= $test->uri_value;
+	return $self->{ test_name }{ $iri }
+}
+
+sub test_type {
+	my $self	= shift;
+	my $test	= shift;
+	my $iri		= $test->uri_value;
+	return $self->{ test_type }{ $iri }
+}
+
 sub software_test_result {
 	my $self		= shift;
 	my $software	= shift;
@@ -239,6 +254,44 @@ sub get_test_status {
 	}
 	
 	
+}
+
+sub get_test_details {
+	my $self	= shift;
+	my $model	= $self->model;
+	{
+		my $iter	= $model->get_statements( undef, $mf->name, undef, iri('http://myrdf.us/ns/sparql/Manifests') );
+		while (my $st = $iter->next) {
+			my $test	= $st->subject->uri_value;
+			my $desc	= $st->object->literal_value;
+			$self->{ test_name }{ $test }	= $desc;
+		}
+	}
+	
+	no warnings 'qw';
+	foreach my $type (qw(
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeSyntaxTest11
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeUpdateSyntaxTest11
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveSyntaxTest11
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveUpdateSyntaxTest11
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#UpdateEvaluationTest
+				)) {
+		
+		my $iter	= $model->get_statements( undef, $rdf->type, iri($type), iri('http://myrdf.us/ns/sparql/Manifests') );
+		while (my $st = $iter->next) {
+			my $test	= $st->subject->uri_value;
+			my $name	= ($type =~ /Syntax/) ? "syntax test" : "evaluation test";
+			if ($type =~ /Update/) {
+				$name	= "update $name";
+			} else {
+				$name	= "query $name";
+			}
+			$name	= "negative $name" if ($type =~ /Negative/);
+			
+			$self->{ test_type }{ $test }	= ucfirst($name);
+		}
+	}
 }
 
 sub get_test_results {
