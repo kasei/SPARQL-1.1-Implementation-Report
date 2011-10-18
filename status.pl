@@ -265,6 +265,7 @@ sub print_html_foot {
 	print qq[<p class="foot">$date</p>\n];
 	print <<'END';
 $Id: $
+<p><a href="https://github.com/kasei/SPARQL-1.1-Implementation-Report">SPARQL-1.1-Implementation-Report</a></p>
 </body>
 </html>
 END

@@ -4,17 +4,18 @@ use strict;
 use warnings;
 no warnings 'uninitialized';
 use lib qw(. lib);
+use Carp qw(confess);
 use Data::Dumper;
 use RDF::Trine qw(iri);
 use RDF::Trine::Namespace qw(rdfs);
-use LWP::Simple;
+use LWP::UserAgent;
 use HTML::Entities;
-use HTTP::Cache::Transparent;
 use SPARQLReport;
 
-HTTP::Cache::Transparent::init( {
-	BasePath => '/tmp/cache',
-} );
+# use HTTP::Cache::Transparent;
+# HTTP::Cache::Transparent::init( {
+# 	BasePath => '/tmp/cache',
+# } );
 
 my $mf				= RDF::Trine::Namespace->new( 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#' );
 my $qt				= RDF::Trine::Namespace->new( 'http://www.w3.org/2001/sw/DataAccess/tests/test-query#' );
@@ -22,6 +23,7 @@ my $ut				= RDF::Trine::Namespace->new( 'http://www.w3.org/2009/sparql/tests/tes
 my $manifestdir		= shift || '/Users/samofool/data/prog/git/perlrdf/RDF-Query/xt/dawg11';
 my $date			= scalar(gmtime) . ' GMT';
 
+unlink('sparql.sqlite');
 my $r	= SPARQLReport->new( [], $manifestdir );
 $r->load_data();
 
@@ -54,8 +56,7 @@ foreach my $t (@tests) {
 
 
 
-
-
+my $ua	= LWP::UserAgent->new;
 
 print_html_head();
 
@@ -66,8 +67,11 @@ foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 	my $id			= $test_ids{ $uri };
 	my $name		= $r->test_name( $t );
 	warn "no name for $uri" unless defined($name);
-	my $title		= $name ? "$uri_short - $name" : $uri_short;
-	print qq[\t<li><a href="#${id}">$title</a></li>\n];
+	if ($name) {
+		print qq[\t<li><a href="#${id}">${uri_short}</a> - $name</li>\n];
+	} else {
+		print qq[\t<li><a href="#${id}">${uri_short}</a></li>\n];
+	}
 }
 print qq[</ul>\n];
 
@@ -114,7 +118,7 @@ foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 			my ($update)	= $model->objects( $action, $ut->request );
 			my $uuri		= $update->uri_value;
 			my $uuri_short	= strip_uri($uuri);
-			my $sparql		= encode_entities(get($uuri));
+			my $sparql		= encode_entities(get_url($ua, $uuri));
 			$sparql			=~ s[\n][<br/>]g;
 			print qq[<h3>Update</h3>\n];
 			print qq[<a href="${uuri}">${uuri_short}</a><br/>\n];
@@ -127,7 +131,7 @@ foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 	 		my ($query)		= $model->objects( $action, $qt->query );
  			my $quri		= $query->uri_value;
 			my $quri_short	= strip_uri($quri);
-			my $sparql		= encode_entities(get($quri));
+			my $sparql		= encode_entities(get_url($ua, $quri));
 			$sparql			=~ s[\n][<br/>]g;
 			print qq[<h3>Query</h3>\n];
 			print qq[<a href="${quri}">${quri_short}</a><br/>\n];
@@ -143,7 +147,7 @@ foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 		# syntax tests
 		my $quri		= $action->uri_value;
 		my $quri_short	= strip_uri($quri);
-		my $sparql	= encode_entities(get($quri));
+		my $sparql		= encode_entities(get_url($ua, $quri));
 		$sparql		=~ s[\n][<br/>]g;
 		print qq[<h3>Query</h3>\n];
 		print qq[<a href="${quri}">${quri_short}</a><br/>\n];
@@ -178,7 +182,7 @@ sub print_dataset {
 	foreach my $d (@data) {
 		my $uri	= $d->uri_value;
 		my $uri_short	= strip_uri($uri);
-		my $rdf	= get($uri);
+		my $rdf			= get_url($ua, $uri);
 		print qq[<p><a href="${uri}">${uri_short}</a></p>\n];
 		print qq[<div class="query">] . encode_entities($rdf) . qq[</div>\n];
 	}
@@ -188,13 +192,14 @@ sub print_dataset {
 			my ($graph)		= $model->objects( $d, $ut->graph );
 			my ($name)		= $model->objects( $d, $rdfs->label );
 			my $uri			= $name->literal_value;
-			my $rdf	= get($graph->uri_value);
+			my $url			= $graph->uri_value;
+			my $rdf			= get_url($ua, $url);
 			print qq[<p><a href="${uri}">${uri}</a></p>\n];
 			print qq[<div class="query">] . encode_entities($rdf) . qq[</div>\n];
 		} else {
 			my $uri	= $d->uri_value;
 			my $uri_short	= strip_uri($uri);
-			my $rdf	= get($uri);
+			my $rdf			= get_url($ua, $uri);
 			print qq[<p><a href="${uri}">${uri_short}</a></p>\n];
 			print qq[<div class="query">] . encode_entities($rdf) . qq[</div>\n];
 		}
@@ -212,7 +217,7 @@ sub print_dataset {
 			foreach my $d (@{ $da || [] }) {
 				my $uri	= $d->uri_value;
 				my $uri_short	= strip_uri($uri);
-				my $rdf	= get($uri);
+				my $rdf			= get_url($ua, $uri);
 				print qq[<p><a href="${uri}">${uri_short}</a></p>\n];
 				print qq[<div class="query">] . encode_entities($rdf) . qq[</div>\n];
 			}
@@ -220,7 +225,7 @@ sub print_dataset {
 			foreach my $g (@{ $ga || [] }) {
 				my $uri	= $g->uri_value;
 				my $uri_short	= strip_uri($uri);
-				my $rdf	= get($uri);
+				my $rdf			= get_url($ua, $uri);
 				print qq[<p><a href="${uri}">${uri_short}</a></p>\n];
 				print qq[<div class="query">] . encode_entities($rdf) . qq[</div>\n];
 			}
@@ -242,7 +247,7 @@ sub print_update_dataset {
 	foreach my $d (@data) {
 		my $uri	= $d->uri_value;
 		my $uri_short	= strip_uri($uri);
-		my $rdf	= get($uri);
+		my $rdf			= get_url($ua, $uri);
 		print qq[<p><a href="${uri}">${uri_short}</a></p>\n];
 		print qq[<div class="query">] . encode_entities($rdf) . qq[</div>\n];
 	}
@@ -251,7 +256,7 @@ sub print_update_dataset {
 		my ($graph)		= $model->objects( $d, $ut->graph );
 		my ($name)		= $model->objects( $d, $rdfs->label );
 		my $uri			= $name->literal_value;
-		my $rdf	= get($graph->uri_value);
+		my $rdf			= get_url($ua, $graph->uri_value);
 		print qq[<p><a href="${uri}">${uri}</a></p>\n];
 		print qq[<div class="query">] . encode_entities($rdf) . qq[</div>\n];
 	}
@@ -260,6 +265,21 @@ sub print_update_dataset {
 
 
 ################################################################################
+
+sub get_url {
+	my $ua		= shift;
+	my $uri		= shift;
+	$uri		=~ s{http://www.w3.org/2009/sparql/docs/tests/data-sparql11/}{file://$manifestdir/};
+	my $resp	= $ua->get($uri);
+	unless ($resp->is_success) {
+		warn $uri;
+		confess Dumper($resp);
+	}
+	
+	my $content	= $resp->content;
+	confess "uh oh" if ($content =~ /DOCTYPE/);
+	return $content;
+}
 
 sub strip_uri {
 	my $t	= shift;
@@ -300,6 +320,7 @@ END
 sub print_html_foot {
 	print <<'END';
 $Id: $
+<p><a href="https://github.com/kasei/SPARQL-1.1-Implementation-Report">SPARQL-1.1-Implementation-Report</a></p>
 </body>
 </html>
 END
