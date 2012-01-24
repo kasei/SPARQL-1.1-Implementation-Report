@@ -155,7 +155,7 @@ foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 	}
 }
 
-print_html_foot();
+print_html_foot($date);
 
 
 sub print_dataset {
@@ -318,9 +318,17 @@ END
 }
 
 sub print_html_foot {
+	my $date	= shift;
+	print <<'END';
+<hr/>
+<p>
+	Generated for the <a href="http://www.w3.org/2009/sparql/docs/tests/">SPARQL 1.1 test suite</a> by <a href="https://github.com/kasei/SPARQL-1.1-Implementation-Report">SPARQL-1.1-Implementation-Report</a>.
+	Direct new implementation reports and feedback to <a href="mailto:public-rdf-dawg-comments@w3.org">public-rdf-dawg-comments@w3.org</a>.
+</p>
+END
+	print qq[<p class="foot">$date</p>\n];
 	print <<'END';
 $Id: $
-<p><a href="https://github.com/kasei/SPARQL-1.1-Implementation-Report">SPARQL-1.1-Implementation-Report</a></p>
 </body>
 </html>
 END
