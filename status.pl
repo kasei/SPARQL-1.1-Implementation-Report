@@ -59,8 +59,13 @@ sub implementation_summary {
 	print qq[<h3 id="summary">Implementation Summary</h3>];
 	print qq[<table>\n\t<tr>\n\t\t<th>Spec</th>\n];
 	foreach my $s ($r->software) {
-		my $name		= $r->software_name( $s );
-		print qq[\t\t<th>$name</td>\n];
+		my $name	= $r->software_name( $s );
+		my $link	= $r->software_link( $s );
+		if ($link) {
+			print qq[\t\t<th><a href="$link">$name</a></td>\n];
+		} else {
+			print qq[\t\t<th>$name</td>\n];
+		}
 	}
 	print qq[\t</tr>\n];
 	
@@ -262,10 +267,16 @@ END
 
 sub print_html_foot {
 	my $date	= shift;
-	print qq[<p class="foot">$date</p>\n];
+	print <<'END';
+<hr/>
+<p>
+	Generated for the <a href="http://www.w3.org/2009/sparql/docs/tests/">SPARQL 1.1 test suite</a> by <a href="https://github.com/kasei/SPARQL-1.1-Implementation-Report">SPARQL-1.1-Implementation-Report</a>.
+	Direct new implementation reports and feedback to <a href="mailto:public-rdf-dawg-comments@w3.org">public-rdf-dawg-comments@w3.org</a>.
+</p>
+END
+	print qq[<p class="foot">Run on ${date}.</p>\n];
 	print <<'END';
 $Id: $
-<p><a href="https://github.com/kasei/SPARQL-1.1-Implementation-Report">SPARQL-1.1-Implementation-Report</a></p>
 </body>
 </html>
 END

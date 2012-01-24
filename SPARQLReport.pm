@@ -276,15 +276,23 @@ sub get_test_details {
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveUpdateSyntaxTest11
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#UpdateEvaluationTest
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ServiceDescriptionTest
 				)) {
 		
 		my $iter	= $model->get_statements( undef, $rdf->type, iri($type), iri('http://myrdf.us/ns/sparql/Manifests') );
 		while (my $st = $iter->next) {
 			my $test	= $st->subject->uri_value;
-			my $name	= ($type =~ /Syntax/) ? "syntax test" : "evaluation test";
+			my $name;
+			if ($type =~ /Eval/) {
+				$name	= "evaluation test";
+			} elsif ($type =~ /Syntax/) {
+				$name	= "syntax test";
+			} elsif ($type =~ /ServiceDescription/) {
+				$name	= "service description test";
+			}
 			if ($type =~ /Update/) {
 				$name	= "update $name";
-			} else {
+			} elsif ($type =~ /Query/) {
 				$name	= "query $name";
 			}
 			$name	= "negative $name" if ($type =~ /Negative/);
@@ -335,6 +343,7 @@ sub get_software {
 			$software{ $s }	= $soft;
 		}
 	}
+	
 	$self->{software}	= [ values %software ];
 	
 	foreach my $s (@{ $self->{software} }) {
@@ -345,7 +354,15 @@ sub get_software {
 		} else {
 			$self->{ software_names }{ $s->as_string }	= $s->uri_value;
 		}
+		
+		my @links	= grep { blessed($_) and $_->isa('RDF::Trine::Node') } $model->objects_for_predicate_list( $s, $doap->homepage );
+		if (@links) {
+			$self->{ software_links }{ $s->as_string }	= $links[0]->value;
+		}
 	}
+	
+	# produce a final ordering of the implementations based on their name
+	$self->{software}	= [ sort { lc($self->software_name($a)) cmp lc($self->software_name($b)) } values %software ];
 }
 
 sub software {
@@ -357,6 +374,12 @@ sub software_name {
 	my $self	= shift;
 	my $s		= shift;
 	return $self->{ software_names }{ $s->as_string };
+}
+
+sub software_link {
+	my $self	= shift;
+	my $s		= shift;
+	return $self->{ software_links }{ $s->as_string };
 }
 
 1;
