@@ -6,10 +6,11 @@ http://kasei.us/code/rdf-query/dawg11/earl-eval-11.ttl
 http://kasei.us/code/rdf-query/dawg11/earl-syntax-11.ttl
 
 # ARQ:
-http://people.apache.org/~andy/ARQ-earl-2011-09-26.ttl
+# http://people.apache.org/~andy/ARQ-earl-2011-09-26.ttl
+http://people.apache.org/~andy/ARQ-earl-2012-01-24.ttl
 
 # Missing implementations:
-# 4store
+# 4store/5store
 # AllegroGraph
 # Anzo Glitter
 # Corese
