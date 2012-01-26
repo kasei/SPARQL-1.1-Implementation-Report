@@ -143,7 +143,8 @@ END
 			my $name	= strip_test($iri);
 			my $status	= $r->test_approval_status( $t );
 			$status	=~ s{http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#}{};
-			(my $testid = $name) =~ |\#|/|;
+			my $testid	= $name;
+			$testid		=~ tr|#|/|;
 	# 		warn "\t\t" . $t->uri_value . "\n";
 			print <<"END";
 		<tr id="${testid}">
