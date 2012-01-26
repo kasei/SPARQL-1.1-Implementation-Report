@@ -143,9 +143,10 @@ END
 			my $name	= strip_test($iri);
 			my $status	= $r->test_approval_status( $t );
 			$status	=~ s{http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#}{};
+			(my $testid = $name) =~ |\#|/|;
 	# 		warn "\t\t" . $t->uri_value . "\n";
 			print <<"END";
-		<tr>
+		<tr id="${testid}">
 			<td>$name</td>
 			<td class="${status}">${status}</td>
 END
