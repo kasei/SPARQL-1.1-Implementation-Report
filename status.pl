@@ -140,15 +140,17 @@ END
 			$total++;
 			next if ($r->test_is_optional( $t ));
 			my $iri		= $t->uri_value;
+			my ($id)	= $iri =~ m[#(.*)$];
 			my $name	= strip_test($iri);
 			my $status	= $r->test_approval_status( $t );
+			
 			$status	=~ s{http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#}{};
 			my $testid	= $name;
 			$testid		=~ tr|#|/|;
 	# 		warn "\t\t" . $t->uri_value . "\n";
 			print <<"END";
 		<tr id="${testid}">
-			<td>$name</td>
+			<td><a href="http://www.w3.org/2009/sparql/docs/tests/summary.html#${id}">$name</a></td>
 			<td class="${status}">${status}</td>
 END
 			foreach my $software ($r->software) {
