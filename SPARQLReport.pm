@@ -105,7 +105,7 @@ sub get_manifests {
 	my $self	= shift;
 	my $model	= $self->model;
 	{
-		my $iter	= $model->get_statements( undef, $mf->conformanceRequirement );
+		my $iter	= $model->get_statements( undef, $mf->conformanceRequirement, undef, iri('http://myrdf.us/ns/sparql/Manifests') );
 		my %manifests;
 		my %specs;
 		while (my $st = $iter->next) {
@@ -245,7 +245,7 @@ sub get_test_status {
 	}
 	
 	{
-		my $iter	= $model->get_statements( undef, $dt->approval );
+		my $iter	= $model->get_statements( undef, $dt->approval, undef, iri('http://myrdf.us/ns/sparql/Manifests') );
 		while (my $st = $iter->next) {
 			my $test	= $st->subject->uri_value;
 			my $status	= $st->object->uri_value;
