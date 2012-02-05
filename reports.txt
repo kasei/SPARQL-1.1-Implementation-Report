@@ -8,8 +8,14 @@ http://kasei.us/code/rdf-query/dawg11/earl-syntax-11.ttl
 
 # ARQ:
 # http://people.apache.org/~andy/ARQ-earl-2011-09-26.ttl
-http://people.apache.org/~andy/ARQ-earl-2012-01-25.ttl
+# http://people.apache.org/~andy/ARQ-earl-2012-01-25.ttl
+# http://people.apache.org/~andy/ARQ-earl-2012-01-31.ttl
+http://people.apache.org/~andy/ARQ-earl-2012-02-02.ttl
 http://people.apache.org/~andy/ARQ-earl-fed-2012-01-25.ttl
+
+# FuXi
+# http://metacognition.info/public_rdf/n3/FuXi.sparql11-entailment-earl.n3
+http://metacognition.info/public_rdf/ttl/FuXi.sparql11-entailment-earl.ttl
 
 # Missing implementations:
 # 4store/5store
