@@ -355,7 +355,7 @@ sub get_software {
 			$self->{ software_names }{ $s->as_string }	= $s->uri_value;
 		}
 		
-		my @links	= grep { blessed($_) and $_->isa('RDF::Trine::Node') } $model->objects_for_predicate_list( $s, $doap->homepage );
+		my @links	= grep { blessed($_) and $_->isa('RDF::Trine::Node') } $model->objects_for_predicate_list( $s, $doap->homepage, $foaf->homepage );
 		if (@links) {
 			$self->{ software_links }{ $s->as_string }	= $links[0]->value;
 		}
