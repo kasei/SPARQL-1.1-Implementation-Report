@@ -17,6 +17,9 @@ http://people.apache.org/~andy/ARQ-earl-fed-2012-01-25.ttl
 # http://metacognition.info/public_rdf/n3/FuXi.sparql11-entailment-earl.n3
 http://metacognition.info/public_rdf/ttl/FuXi.sparql11-entailment-earl.ttl
 
+# Leviathan/dotNetRDF
+http://www.dotnetrdf.org/downloads/earl-sparql11-v060-2012-02-07.ttl
+
 # Missing implementations:
 # 4store/5store
 # AllegroGraph
