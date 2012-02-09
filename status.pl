@@ -1,4 +1,14 @@
 #!/usr/bin/perl
+# 
+# SPARQL 1.1 Implementation Report: https://github.com/kasei/SPARQL-1.1-Implementation-Report
+# 
+# Copyright © 2012 Gregory Todd Williams. All Rights Reserved. This work is
+# distributed under the W3C® Software License [1] in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# 
+# [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+
 
 use strict;
 use warnings;
@@ -127,9 +137,13 @@ sub tests_table {
 			<th>Status</th>
 END
 		foreach my $s ($r->software) {
-			my $software	= $s->as_string;
-			my $name		= $r->software_name( $s );
-			print "\t\t<th>$name</th>\n";
+			my $name	= $r->software_name( $s );
+			my $link	= $r->software_link( $s );
+			if ($link) {
+				print qq[\t\t<th><a href="$link">$name</a></td>\n];
+			} else {
+				print qq[\t\t<th>$name</td>\n];
+			}
 		}
 		print "\t</tr>\n";
 		

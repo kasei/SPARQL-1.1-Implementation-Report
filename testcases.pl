@@ -1,4 +1,13 @@
 #!/usr/bin/perl
+# 
+# SPARQL 1.1 Implementation Report: https://github.com/kasei/SPARQL-1.1-Implementation-Report
+# 
+# Copyright © 2012 Gregory Todd Williams. All Rights Reserved. This work is
+# distributed under the W3C® Software License [1] in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# 
+# [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
 
 use strict;
 use warnings;

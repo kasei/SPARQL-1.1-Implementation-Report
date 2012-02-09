@@ -1,3 +1,12 @@
+# SPARQL 1.1 Implementation Report: https://github.com/kasei/SPARQL-1.1-Implementation-Report
+# 
+# Copyright © 2012 Gregory Todd Williams. All Rights Reserved. This work is
+# distributed under the W3C® Software License [1] in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# 
+# [1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+
 package SPARQLReport;
 
 use strict;
@@ -17,6 +26,7 @@ my $manifestbase	= 'http://www.w3.org/2009/sparql/docs/tests/data-sparql11';
 my $doap			= RDF::Trine::Namespace->new( 'http://usefulinc.com/ns/doap#' );
 my $mf				= RDF::Trine::Namespace->new( 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#' );
 my $dt				= RDF::Trine::Namespace->new( 'http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#' );
+my $earl			= RDF::Trine::Namespace->new( 'http://www.w3.org/ns/earl#' );
 
 sub new {
 	my $class			= shift;
@@ -325,6 +335,14 @@ END
 		my $test		= $r->{test}->uri_value;
 		my $outcome		= $r->{outcome}->uri_value;
 		my $software	= $r->{software}->as_string;
+		
+		if ($outcome =~ /passed/) {
+			$outcome	= $earl->pass->uri_value;
+		}
+		if ($outcome =~ /failed/) {
+			$outcome	= $earl->fail->uri_value;
+		}
+		
 		push( @{ $self->{ test_results }{raw} }, [$test, $outcome, $software] );
 		$self->{ test_results }{ software }{ $software }{ $test }	= $outcome;
 		$self->{ test_results }{ test }{ $test }{ $software }		= $outcome;
