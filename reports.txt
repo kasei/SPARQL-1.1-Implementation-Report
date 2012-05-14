@@ -1,9 +1,11 @@
 # Rasqal:
-http://librdf.org/2011/08-testing/earl.rdf
+# http://librdf.org/2011/08-testing/earl.rdf
+http://librdf.org/2012/05-testing/results.ttl
 
 # RDF::Query:
 http://kasei.us/code/rdf-query/dawg11/earl-eval-11.ttl
 http://kasei.us/code/rdf-query/dawg11/earl-syntax-11.ttl
+http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
 # http://kasei.us/2009/09/sparql/sdvalidator.cgi?url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
 
 # ARQ:
