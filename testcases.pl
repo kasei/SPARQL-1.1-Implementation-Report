@@ -14,6 +14,7 @@ use warnings;
 no warnings 'uninitialized';
 use lib qw(. lib);
 use Carp qw(confess);
+use Scalar::Util qw(blessed);
 use Data::Dumper;
 use RDF::Trine qw(iri);
 use RDF::Trine::Namespace qw(rdfs);
@@ -117,7 +118,7 @@ foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 	# @@ TODO
 	# <div class="approval">Approved by <a href="${approval_url}">${approval_url}</a></div>
 	
-	if ($type =~ /evaluation/i) {
+	if ($type =~ /evaluation|(result[ ]format)/i) {
 		# eval tests
 		my ($result)	= $model->objects( $t, $mf->result );
 		
@@ -152,7 +153,7 @@ foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 			print qq[<h3>Results</h3>\n];
 			print qq[<p><a href="${ruri}">${ruri_short}</a></p>\n];
  		}
-	} else {
+	} elsif ($type =~ /syntax/i) {
 		# syntax tests
 		my $quri		= $action->uri_value;
 		my $quri_short	= strip_uri($quri);
@@ -161,6 +162,8 @@ foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 		print qq[<h3>Query</h3>\n];
 		print qq[<a href="${quri}">${quri_short}</a><br/>\n];
 		print qq[<div class="query">${sparql}</div>\n];
+	} else {
+		warn "*** Test type ($type) not handled for $uri";
 	}
 }
 
