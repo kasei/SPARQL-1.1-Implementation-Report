@@ -13,7 +13,10 @@ use strict;
 use warnings;
 use v5.12;
 
+use Carp qw(confess);
+use File::Copy;
 use File::Spec;
+use File::Path qw(make_path);
 use RDF::Redland;
 use RDF::Trine qw(iri);
 use RDF::Trine::Namespace qw(foaf rdf rdfs);
@@ -21,6 +24,8 @@ use RDF::Query;
 use RDF::Trine::Error qw(:try);
 use Scalar::Util qw(blessed);
 use HTML::Entities;
+# use Module::Load::Conditional qw(can_load);
+# can_load(modules => {'RDF::Trine::Parser::Serd' => 0});
 
 my $manifestbase	= 'http://www.w3.org/2009/sparql/docs/tests/data-sparql11';
 my $doap			= RDF::Trine::Namespace->new( 'http://usefulinc.com/ns/doap#' );
@@ -32,7 +37,13 @@ sub new {
 	my $class			= shift;
 	my $sources			= shift || [];
 	my $manifestdir		= shift;
-	my $self			= bless({ sources => $sources, manifestdir => $manifestdir }, $class);
+	
+	my ($d,$m,$y)		= (gmtime())[3,4,5];
+	$y					+= 1900;
+	my $date			= sprintf('%04d-%02d-%02d', $y, $m, $d);
+	my $path			= File::Spec->catdir('data', $date);
+	make_path($path);
+	my $self			= bless({ sources => $sources, manifestdir => $manifestdir, data_path => $path }, $class);
 	my $store			= RDF::Trine::Store::DBI::SQLite->new('model', 'dbi:SQLite:dbname=sparql.sqlite', '', '');
 	$self->{model}		= RDF::Trine::Model->new( $store );
 	return $self;
@@ -53,6 +64,11 @@ sub manifestdir {
 	return $self->{manifestdir};
 }
 
+sub data_path {
+	my $self	= shift;
+	return $self->{data_path};
+}
+
 sub load_data {
 	my $self	= shift;
 	my $model			= $self->model;
@@ -63,6 +79,7 @@ sub load_data {
 		warn "# loading $f\n";
 		try {
 			my $base	= join('/', $manifestbase, 'manifest-all.ttl');
+			$self->archive_file('manifests', 'manifest-all.ttl', $f);
 			$parser->parse_file_into_model( $base, $f, $model, context => iri('http://myrdf.us/ns/sparql/Manifests') );
 		} catch Error with {
 			my $e	= shift;
@@ -87,6 +104,7 @@ sub load_manifest_data {
 			my ($dir)	= ($f =~ m{([^/]+)/manifest.ttl});
 			my $base	= join('/', $manifestbase, $dir, 'manifest.ttl' );
 			my $file	= File::Spec->catfile( $self->manifestdir, $f );
+			$self->archive_file('manifests', $f, $file);
 			warn "# loading $file with base $base\n";
 			$parser->parse_file_into_model( $base, $file, $model, context => iri('http://myrdf.us/ns/sparql/Manifests') );
 		} catch Error with {
@@ -103,7 +121,17 @@ sub load_source_data {
 	foreach my $u ($self->sources) {
 		warn "# loading $u\n";
 		try {
-			RDF::Trine::Parser->parse_url_into_model( $u, $model, context => iri('http://myrdf.us/ns/sparql/Implementations') );
+			RDF::Trine::Parser->parse_url_into_model(
+				$u,
+				$model,
+				context		=> iri('http://myrdf.us/ns/sparql/Implementations'),
+				content_cb	=> sub {
+					my $url		= shift;
+					my $content	= shift;
+					my $resp	= shift;
+					$self->archive_string('implementations', $url, $content);
+				},
+			);
 		} catch Error with {
 			my $e	= shift;
 			warn $e->text;
@@ -287,6 +315,7 @@ sub get_test_details {
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#UpdateEvaluationTest
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ServiceDescriptionTest
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#CSVResultFormatTest
 				)) {
 		
 		my $iter	= $model->get_statements( undef, $rdf->type, iri($type), iri('http://myrdf.us/ns/sparql/Manifests') );
@@ -297,9 +326,14 @@ sub get_test_details {
 				$name	= "evaluation test";
 			} elsif ($type =~ /Syntax/) {
 				$name	= "syntax test";
+			} elsif ($type =~ /ResultFormat/) {
+				$name	= "result format test";
 			} elsif ($type =~ /ServiceDescription/) {
 				$name	= "service description test";
+			} else {
+				confess "Unrecognized test type $type";
 			}
+			
 			if ($type =~ /Update/) {
 				$name	= "update $name";
 			} elsif ($type =~ /Query/) {
@@ -398,6 +432,35 @@ sub software_link {
 	my $self	= shift;
 	my $s		= shift;
 	return $self->{ software_links }{ $s->as_string };
+}
+
+sub archive_string {
+	my $self	= shift;
+	my $group	= shift;
+	my $name	= shift;
+	my $string	= shift;
+	
+	$name		=~ s{^https?://}{};
+	
+	my $base	= $self->data_path;
+	my $dest	= File::Spec->catfile( $base, $group, $name );
+	(undef, my $dir)	= File::Spec->splitpath($dest);
+	make_path($dir);
+	open(my $fh, '>', $dest);
+	print {$fh} $string;
+	close($fh);
+}
+
+sub archive_file {
+	my $self	= shift;
+	my $group	= shift;
+	my $name	= shift;
+	my $file	= shift;
+	my $base	= $self->data_path;
+	my $dest	= File::Spec->catfile( $base, $group, $name );
+	(undef, my $dir)	= File::Spec->splitpath($dest);
+	make_path($dir);
+	copy($file, $dest);
 }
 
 1;
