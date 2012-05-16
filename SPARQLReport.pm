@@ -40,6 +40,7 @@ sub new {
 	
 	my ($d,$m,$y)		= (gmtime())[3,4,5];
 	$y					+= 1900;
+	$m++;
 	my $date			= sprintf('%04d-%02d-%02d', $y, $m, $d);
 	my $path			= File::Spec->catdir('data', $date);
 	make_path($path);
