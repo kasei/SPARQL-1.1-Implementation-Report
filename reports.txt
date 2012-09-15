@@ -6,21 +6,33 @@ http://librdf.org/2012/05-testing/results.ttl
 http://kasei.us/code/rdf-query/dawg11/earl-eval-11.ttl
 http://kasei.us/code/rdf-query/dawg11/earl-syntax-11.ttl
 http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
-# http://kasei.us/2009/09/sparql/sdvalidator.cgi?url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
+# http://kasei.us/2009/09/sparql/protocol_validator.cgi?query_url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
 
 # ARQ:
 # http://people.apache.org/~andy/ARQ-earl-2011-09-26.ttl
 # http://people.apache.org/~andy/ARQ-earl-2012-01-25.ttl
 # http://people.apache.org/~andy/ARQ-earl-2012-01-31.ttl
-http://people.apache.org/~andy/ARQ-earl-2012-02-02.ttl
-http://people.apache.org/~andy/ARQ-earl-fed-2012-01-25.ttl
+# http://people.apache.org/~andy/ARQ-earl-2012-02-02.ttl
+# http://people.apache.org/~andy/ARQ-earl-fed-2012-01-25.ttl
+# http://people.apache.org/~andy/ARQ-earl-2012-08-05.ttl
+http://people.apache.org/~andy/ARQ-earl-2012-09-11.ttl
+http://people.apache.org/~andy/ARQ-earl-fed-2012-08-06.ttl
 
 # FuXi
 # http://metacognition.info/public_rdf/n3/FuXi.sparql11-entailment-earl.n3
 http://metacognition.info/public_rdf/ttl/FuXi.sparql11-entailment-earl.ttl
 
+# Triclops
+http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmetacognition.info%2Fsparql%2Fprotocol&software=http%3A%2F%2Fcode.google.com%2Fp%2Fpython-dlp%2Fwiki%2FTriclops
+http://python-dlp.googlecode.com/svn/trunk/triclops/triclops.ttl
+
+# Sesame
+http://www.openrdf.org/earl/sesame-sparql11-earl.ttl
+
 # Leviathan/dotNetRDF
-http://www.dotnetrdf.org/downloads/earl-sparql11-v060-2012-02-07.ttl
+# http://www.dotnetrdf.org/downloads/earl-sparql11-v060-2012-02-07.ttl
+# http://www.dotnetrdf.org/downloads/earl-sparql11-v072-2012-09-13.ttl
+http://www.dotnetrdf.org/downloads/earl-sparql11-v072-2012-09-14.ttl
 
 # Missing implementations:
 # 4store/5store
