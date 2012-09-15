@@ -316,6 +316,7 @@ sub get_test_details {
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#UpdateEvaluationTest
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ServiceDescriptionTest
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ProtocolTest
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#CSVResultFormatTest
 				)) {
 		
@@ -331,6 +332,8 @@ sub get_test_details {
 				$name	= "result format test";
 			} elsif ($type =~ /ServiceDescription/) {
 				$name	= "service description test";
+			} elsif ($type =~ /Protocol/) {
+				$name	= "protocol test";
 			} else {
 				confess "Unrecognized test type $type";
 			}
