@@ -72,9 +72,9 @@ sub implementation_summary {
 		my $name	= $r->software_name( $s );
 		my $link	= $r->software_link( $s );
 		if ($link) {
-			print qq[\t\t<th><a href="$link">$name</a></td>\n];
+			print qq[\t\t<th><a href="$link">$name</a></th>\n];
 		} else {
-			print qq[\t\t<th>$name</td>\n];
+			print qq[\t\t<th>$name</th>\n];
 		}
 	}
 	print qq[\t</tr>\n];
@@ -112,9 +112,9 @@ sub implementation_summary {
 			my $tperc	= ($run == 0) ? 'n/a' : sprintf('%.1f%%', $num);
 			my $bucket	= int($num/10);
 			my $grade_class	= ($run) ? "b$bucket" : '';
-			print qq[\t<td class="$sid $grade_class">$tperc</td>\n];
+			print qq[\t\t<td class="$sid $grade_class">$tperc</td>\n];
 		}
-		print qq[</tr>\n];
+		print qq[\t</tr>\n];
 	}
 	print qq[</table>\n];	
 }
@@ -131,18 +131,18 @@ sub tests_table {
 		my $specname	= $r->spec_name( $spec );
 		my $specid		= $r->spec_id( $spec );
 		print <<"END";
-		<tr><th colspan="${width}"><h3 id="$specid">$specname</h3></th></tr>
-		<tr>
-			<th>Test</th>
-			<th>Status</th>
+	<tr><th colspan="${width}"><h3 id="$specid">$specname</h3></th></tr>
+	<tr>
+		<th>Test</th>
+		<th>Status</th>
 END
 		foreach my $s ($r->software) {
 			my $name	= $r->software_name( $s );
 			my $link	= $r->software_link( $s );
 			if ($link) {
-				print qq[\t\t<th><a href="$link">$name</a></td>\n];
+				print qq[\t\t<th><a href="$link">$name</a></th>\n];
 			} else {
-				print qq[\t\t<th>$name</td>\n];
+				print qq[\t\t<th>$name</th>\n];
 			}
 		}
 		print "\t</tr>\n";
@@ -163,9 +163,9 @@ END
 			$testid		=~ tr|#|/|;
 	# 		warn "\t\t" . $t->uri_value . "\n";
 			print <<"END";
-		<tr id="${testid}">
-			<td><a href="http://www.w3.org/2009/sparql/docs/tests/summary.html#${id}">$name</a></td>
-			<td class="${status}">${status}</td>
+	<tr id="${testid}">
+		<td><a href="http://www.w3.org/2009/sparql/docs/tests/summary.html#${id}">$name</a></td>
+		<td class="${status}">${status}</td>
 END
 			foreach my $software ($r->software) {
 				my $sid	= $software_ids{ $software };
