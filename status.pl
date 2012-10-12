@@ -172,7 +172,7 @@ END
 				my $outcome	= $r->software_test_result( $software, $t );
 				if ($outcome) {
 					$outcome	=~ s{http://www.w3.org/ns/earl#}{};
-					$software_totals{ $software }++;
+					$software_totals{ $software }++ if ($outcome ne 'inapplicable');
 					$software_passes{ $software }++ if ($outcome eq 'pass');
 					print qq[\t\t<td class="$sid ${outcome}">${outcome}</td>\n];
 				} else {
