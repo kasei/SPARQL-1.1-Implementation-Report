@@ -24,6 +24,7 @@ use RDF::Query;
 use RDF::Trine::Error qw(:try);
 use Scalar::Util qw(blessed);
 use HTML::Entities;
+use Data::Dumper;
 # use Module::Load::Conditional qw(can_load);
 # can_load(modules => {'RDF::Trine::Parser::Serd' => 0});
 
@@ -368,8 +369,16 @@ WHERE {
 	}
 }
 END
+	unless ($query) {
+		warn RDF::Query->error;
+	}
 	my $iter	= $query->execute( $model );
 	while (my $r = $iter->next) {
+		my $t			= $r->{test};
+		unless (blessed($t) and $t->isa('RDF::Trine::Node::Resource')) {
+			warn "Test node is not an IRI: " . Dumper($t);
+			next;
+		}
 		my $test		= $r->{test}->uri_value;
 		my $outcome		= $r->{outcome}->uri_value;
 		my $software	= $r->{software}->as_string;
