@@ -227,7 +227,6 @@ sub print_html_head {
 <style type="text/css" title="text/css">
 /* <![CDATA[ */
 			table {
-				width: 850px;
 				border: 1px solid #000;
 				border-collapse: collapse;
 			}
