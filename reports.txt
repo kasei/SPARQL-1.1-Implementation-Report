@@ -5,9 +5,10 @@ http://librdf.org/2012/05-testing/results.ttl
 # RDF::Query:
 http://kasei.us/code/rdf-query/dawg11/earl-eval-11.ttl
 http://kasei.us/code/rdf-query/dawg11/earl-syntax-11.ttl
-http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
 http://kasei.us/code/rdf-query/dawg11/rdf-query-protocol-earl-2012-10-12.ttl
+http://kasei.us/code/rdf-query/dawg11/rdf-query-servicedescription-earl-2012-10-13.ttl
 # http://kasei.us/2009/09/sparql/protocol_validator.cgi?query_url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
+# http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
 
 # ARQ:
 # http://people.apache.org/~andy/ARQ-earl-2011-09-26.ttl
