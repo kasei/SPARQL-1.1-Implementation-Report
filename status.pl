@@ -119,15 +119,36 @@ sub implementation_summary {
 	print qq[</table>\n];	
 }
 
+sub software_for_spec {
+	my $r		= shift;
+	my $spec	= shift;
+	my %used;
+	my @software	= $r->software;
+	foreach my $t ($r->spec_tests( $spec )) {
+		next if ($r->test_is_optional( $t ));
+		foreach my $software (@software) {
+			my $outcome	= $r->software_test_result( $software, $t );
+			$outcome	=~ s{http://www.w3.org/ns/earl#}{};
+			if ($outcome and $outcome ne 'inapplicable') {
+				$used{$software}++;
+			}
+		}
+	}
+	
+	my @software	= grep { $used{$_} } $r->software();
+	return @software;
+}
+
 sub tests_table {
-	my $r	= shift;
-	my $width	= 2 + scalar(@{ [ $r->software ] });
+	my $r		= shift;
 	
 	# warn "Specs\n";
 	print qq[<h3 id="tests">Tests</h3>];
 	print qq[<table>\n];
 	foreach my $spec ($r->specs) {
 	# 	warn "\t$spec\n";
+		my @software	= software_for_spec($r, $spec);
+		my $width	= 2 + scalar(@software);
 		my $specname	= $r->spec_name( $spec );
 		my $specid		= $r->spec_id( $spec );
 		print <<"END";
@@ -136,7 +157,7 @@ sub tests_table {
 		<th>Test</th>
 		<th>Status</th>
 END
-		foreach my $s ($r->software) {
+		foreach my $s (@software) {
 			my $name	= $r->software_name( $s );
 			my $link	= $r->software_link( $s );
 			if ($link) {
@@ -167,7 +188,7 @@ END
 		<td><a href="http://www.w3.org/2009/sparql/docs/tests/summary.html#${id}">$name</a></td>
 		<td class="${status}">${status}</td>
 END
-			foreach my $software ($r->software) {
+			foreach my $software (@software) {
 				my $sid	= $software_ids{ $software };
 				my $outcome	= $r->software_test_result( $software, $t );
 				if ($outcome) {
@@ -184,7 +205,7 @@ END
 	
 	
 		print qq[<tr><td colspan="2">Total &mdash; %Total/%Run (Pass/Run/Total)</td>\n];
-		foreach my $software ($r->software) {
+		foreach my $software (@software) {
 			my $sid		= $software_ids{ $software };
 			my $run		= $software_totals{ $software } || 0;
 			my $pass	= $software_passes{ $software } || 0;
