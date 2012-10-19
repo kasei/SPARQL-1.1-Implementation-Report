@@ -95,8 +95,8 @@ sub implementation_summary {
 			foreach my $software ($r->software) {
 				my $sid	= $software_ids{ $software };
 				my $outcome	= $r->software_test_result( $software, $t );
-				if ($outcome) {
-					$outcome	=~ s{http://www.w3.org/ns/earl#}{};
+				$outcome	=~ s{http://www.w3.org/ns/earl#}{};
+				if ($outcome and $outcome ne 'inapplicable') {
 					$software_totals{ $software }++;
 					$software_passes{ $software }++ if ($outcome eq 'pass');
 				}
@@ -135,8 +135,7 @@ sub software_for_spec {
 		}
 	}
 	
-	my @software	= grep { $used{$_} } $r->software();
-	return @software;
+	return grep { $used{$_} } $r->software();
 }
 
 sub tests_table {
