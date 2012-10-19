@@ -22,14 +22,20 @@ http://people.apache.org/~andy/ARQ-earl-2012-10-12.ttl
 http://people.apache.org/~andy/ARQ-earl-fed-2012-08-06.ttl
 http://people.apache.org/~andy/Fuseki-earl-2012-09-25.ttl
 
+# ARQ-Inference
+http://arq-inference.googlecode.com/svn/ARQ_Inference/ARQ_Entailment_ImplRep.ttl
+
 # FuXi
 # http://metacognition.info/public_rdf/n3/FuXi.sparql11-entailment-earl.n3
 http://metacognition.info/public_rdf/ttl/FuXi.sparql11-entailment-earl.ttl
 
-# Triclops
+# Triclops / Akamu
 # http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmetacognition.info%2Fsparql%2Fprotocol&software=http%3A%2F%2Fcode.google.com%2Fp%2Fpython-dlp%2Fwiki%2FTriclops
-http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmetacognition.info%2Fyijing%2Fsparql&software=http%3A%2F%2Fcode.google.com%2Fp%2Fpython-dlp%2Fwiki%2FTriclops
-http://python-dlp.googlecode.com/svn/trunk/triclops/triclops.ttl
+# http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmetacognition.info%2Fyijing%2Fsparql&software=http%3A%2F%2Fcode.google.com%2Fp%2Fpython-dlp%2Fwiki%2FTriclops
+# http://python-dlp.googlecode.com/svn/trunk/triclops/triclops.ttl
+http://metacognition.info/projects/akamu-doap.ttl
+http://metacognition.info/projects/testing/akamu-triclops-sparql-rdf-protocol-test-results.ttl
+http://metacognition.info/projects/testing/akamu-triclops-sparql-sd-test-results.ttl
 
 # Sesame
 http://www.openrdf.org/earl/sesame-sparql11-earl.ttl
@@ -45,6 +51,9 @@ http://owl-bgp.googlecode.com/svn/trunk/Sparqling_HermiT_ImplRep.ttl
 # Stardog
 http://clarkparsia.com/2012/stardog/stardog_dawg.ttl
 http://clarkparsia.com/2012/stardog/stardog_entailment_regime_report.ttl
+
+# rdf-lib
+https://raw.github.com/gromgull/rdflib-sparql/master/test_reports/earl_latest.ttl
 
 # Missing implementations:
 # 4store/5store
