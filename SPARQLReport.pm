@@ -476,4 +476,30 @@ sub archive_file {
 	copy($file, $dest);
 }
 
+sub test_anchor {
+	my $self	= shift;
+	my $test	= shift;
+	my $iri		= $test->uri_value;
+	
+	if ($iri =~ m{([^/]+)/manifest#(.+)$}) {
+		my $dir		= $1;
+		my $name	= $2;
+		my $id		= join('-', $dir, $name);
+# 		warn "Test anchor: $id\n";
+		return $id;
+	} else {
+		warn "Unexpected test IRI syntax: $iri";
+		return;
+	}
+}
+
+sub test_link {
+	my $self	= shift;
+	my $test	= shift;
+	my $anchor	= $self->test_anchor( $test );
+	return qq[http://www.w3.org/2009/sparql/docs/tests/summary.html#${anchor}];
+}
+
 1;
+
+

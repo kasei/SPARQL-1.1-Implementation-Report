@@ -57,7 +57,7 @@ foreach my $man (@manifests) {
 }
 foreach my $t (@tests) {
 	my $uri	= $t->uri_value;
-	my ($id)	= $uri =~ m[#(.*)$];
+	my $id	= $r->test_anchor( $t );
 	if (exists $test_ids{ $uri }) {
 		die "test defined twice: $uri -> $id\n";
 	}
@@ -74,13 +74,13 @@ print qq[<ul>\n];
 foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 	my $uri			= $t->uri_value;
 	my $uri_short	= strip_uri($uri);
-	my $id			= $test_ids{ $uri };
+	my $anchor		= $r->test_anchor( $t );
 	my $name		= $r->test_name( $t );
 	warn "no name for $uri" unless defined($name);
 	if ($name) {
-		print qq[\t<li><a href="#${id}">${uri_short}</a> - $name</li>\n];
+		print qq[\t<li><a href="#${anchor}">${uri_short}</a> - $name</li>\n];
 	} else {
-		print qq[\t<li><a href="#${id}">${uri_short}</a></li>\n];
+		print qq[\t<li><a href="#${anchor}">${uri_short}</a></li>\n];
 	}
 }
 print qq[</ul>\n];
@@ -105,14 +105,14 @@ my $model	= $r->model;
 # foreach test
 foreach my $t (sort { $a->uri_value cmp $b->uri_value } @tests) {
 	my $uri			= $t->uri_value;
-	my $id			= $test_ids{ $uri };
+	my $anchor		= $r->test_anchor( $t );
 	my $name		= $r->test_name( $t ) || '(none)';
 	my $type		= $r->test_type( $t );
 	my ($action)	= $model->objects( $t, $mf->action );
 	
 	print qq[\n<hr/>\n];
 	print qq[<!-- $uri -->\n];
-	print qq[<h2 id="${id}">] . encode_entities($name) . qq[</h2>\n];
+	print qq[<h2 id="${anchor}">] . encode_entities($name) . qq[</h2>\n];
 	print encode_entities($type) . "\n";
 	
 	# @@ TODO

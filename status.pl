@@ -174,6 +174,7 @@ END
 			$total++;
 			next if ($r->test_is_optional( $t ));
 			my $iri		= $t->uri_value;
+			my $link	= $r->test_link( $t );
 			my ($id)	= $iri =~ m[#(.*)$];
 			my $name	= strip_test($iri);
 			my $status	= $r->test_approval_status( $t );
@@ -184,7 +185,7 @@ END
 	# 		warn "\t\t" . $t->uri_value . "\n";
 			print <<"END";
 	<tr id="${testid}">
-		<td><a href="http://www.w3.org/2009/sparql/docs/tests/summary.html#${id}">$name</a></td>
+		<td><a href="${link}">$name</a></td>
 		<td class="${status}">${status}</td>
 END
 			foreach my $software (@software) {
