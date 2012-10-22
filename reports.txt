@@ -49,7 +49,7 @@ http://www.dotnetrdf.org/downloads/earl-sparql11-v072-2012-09-14.ttl
 http://owl-bgp.googlecode.com/svn/trunk/Sparqling_HermiT_ImplRep.ttl
 
 # Stardog
-http://clarkparsia.com/2012/stardog/stardog_dawg.ttl
+# http://clarkparsia.com/2012/stardog/stardog_dawg.ttl
 http://clarkparsia.com/2012/stardog/stardog_entailment_regime_report.ttl
 
 # rdf-lib
