@@ -168,6 +168,15 @@ sub get_manifests {
 		$self->{specs}		= \%specs;
 		$self->{manifests}	= \%manifests;
 	}
+	{
+		my $iter	= $model->get_statements( undef, $mf->includedSpecifications, undef, iri('http://myrdf.us/ns/sparql/Manifests') );
+		my $st		= $iter->next;
+		my $list	= $st->object;
+		foreach my $n ($model->get_list( $list )) {
+			my $u	= $n->uri_value;
+			push(@{ $self->{ ordered_spec_uris } }, $u);
+		}
+	}
 	foreach my $s (keys %{ $self->{specs} }) {
 		my $spec	= iri($s);
 		my ($name)	= $model->objects( $spec, $rdfs->label, undef );
@@ -181,7 +190,7 @@ sub get_manifests {
 
 sub specs {
 	my $self	= shift;
-	return keys %{ $self->{ specs } };
+	return @{ $self->{ ordered_spec_uris } };
 }
 
 sub spec_name {
