@@ -33,9 +33,13 @@ http://metacognition.info/public_rdf/ttl/FuXi.sparql11-entailment-earl.ttl
 # http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmetacognition.info%2Fsparql%2Fprotocol&software=http%3A%2F%2Fcode.google.com%2Fp%2Fpython-dlp%2Fwiki%2FTriclops
 # http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmetacognition.info%2Fyijing%2Fsparql&software=http%3A%2F%2Fcode.google.com%2Fp%2Fpython-dlp%2Fwiki%2FTriclops
 # http://python-dlp.googlecode.com/svn/trunk/triclops/triclops.ttl
+
+
 http://metacognition.info/projects/akamu-doap.ttl
-http://metacognition.info/projects/testing/akamu-triclops-sparql-rdf-protocol-test-results.ttl
-http://metacognition.info/projects/testing/akamu-triclops-sparql-sd-test-results.ttl
+http://metacognition.info/public_rdf/ttl/akamu-sparql11-rdf-protocol-test-results.ttl
+http://metacognition.info/public_rdf/ttl/akamu-sparql11-graph-store-protocol-test-results.ttl
+http://metacognition.info/public_rdf/ttl/akamu-sparql11-result-format-test-results.ttl
+http://metacognition.info/public_rdf/ttl/akamu-sparql11-sd-test-results.ttl
 
 # Sesame
 http://www.openrdf.org/earl/sesame-sparql11-earl.ttl
@@ -49,7 +53,6 @@ http://www.dotnetrdf.org/downloads/earl-sparql11-v072-2012-09-14.ttl
 http://owl-bgp.googlecode.com/svn/trunk/Sparqling_HermiT_ImplRep.ttl
 
 # Stardog
-# http://clarkparsia.com/2012/stardog/stardog_dawg.ttl
 http://clarkparsia.com/2012/stardog/stardog_entailment_regime_report.ttl
 
 # rdf-lib
@@ -62,7 +65,6 @@ https://raw.github.com/gromgull/rdflib-sparql/master/test_reports/earl_latest.tt
 # Corese
 # Dydra
 # Mulgara
-# Sesame
 # Virtuoso
 # ???
 
