@@ -319,6 +319,7 @@ sub get_test_details {
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ServiceDescriptionTest
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ProtocolTest
 					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#CSVResultFormatTest
+					http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#GraphStoreProtocolTest
 				)) {
 		
 		my $iter	= $model->get_statements( undef, $rdf->type, iri($type), iri('http://myrdf.us/ns/sparql/Manifests') );
@@ -335,6 +336,8 @@ sub get_test_details {
 				$name	= "service description test";
 			} elsif ($type =~ /Protocol/) {
 				$name	= "protocol test";
+			} elsif ($type =~ /GraphStore/) {
+				$name	= "graph store protocol test";
 			} else {
 				confess "Unrecognized test type $type";
 			}
