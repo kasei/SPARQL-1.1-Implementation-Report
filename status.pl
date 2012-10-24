@@ -291,7 +291,6 @@ sub print_html_head {
 <ul>
 	<li><a href="#summary">Implementation Summary</a></li>
 	<li><a href="#tests">Tests by Specifications</a><ul>
-		
 END
 
 	foreach my $spec ($r->specs) {

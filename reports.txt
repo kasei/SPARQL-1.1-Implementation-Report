@@ -33,8 +33,6 @@ http://metacognition.info/public_rdf/ttl/FuXi.sparql11-entailment-earl.ttl
 # http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmetacognition.info%2Fsparql%2Fprotocol&software=http%3A%2F%2Fcode.google.com%2Fp%2Fpython-dlp%2Fwiki%2FTriclops
 # http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmetacognition.info%2Fyijing%2Fsparql&software=http%3A%2F%2Fcode.google.com%2Fp%2Fpython-dlp%2Fwiki%2FTriclops
 # http://python-dlp.googlecode.com/svn/trunk/triclops/triclops.ttl
-
-
 http://metacognition.info/projects/akamu-doap.ttl
 http://metacognition.info/public_rdf/ttl/akamu-sparql11-rdf-protocol-test-results.ttl
 http://metacognition.info/public_rdf/ttl/akamu-sparql11-graph-store-protocol-test-results.ttl
