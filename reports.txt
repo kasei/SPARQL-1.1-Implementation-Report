@@ -10,17 +10,12 @@ http://kasei.us/code/rdf-query/dawg11/rdf-query-servicedescription-earl-2012-10-
 # http://kasei.us/2009/09/sparql/protocol_validator.cgi?query_url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
 # http://www.w3.org/2009/sparql/sdvalidator?url=http%3A%2F%2Fmyrdf.us%2Fsparql11&software=http%3A%2F%2Fkasei.us%2Fcode%2Frdf-query%2F%23project
 
-# ARQ:
-# http://people.apache.org/~andy/ARQ-earl-2011-09-26.ttl
-# http://people.apache.org/~andy/ARQ-earl-2012-01-25.ttl
-# http://people.apache.org/~andy/ARQ-earl-2012-01-31.ttl
-# http://people.apache.org/~andy/ARQ-earl-2012-02-02.ttl
-# http://people.apache.org/~andy/ARQ-earl-fed-2012-01-25.ttl
-# http://people.apache.org/~andy/ARQ-earl-2012-08-05.ttl
-# http://people.apache.org/~andy/ARQ-earl-2012-09-11.ttl
-http://people.apache.org/~andy/ARQ-earl-2012-10-12.ttl
-http://people.apache.org/~andy/ARQ-earl-fed-2012-08-06.ttl
-http://people.apache.org/~andy/Fuseki-earl-2012-09-25.ttl
+# ARQ/Fuseki:
+http://people.apache.org/~andy/SPARQL-EARL-Current/ARQ-earl-2012-11-27.ttl
+http://people.apache.org/~andy/SPARQL-EARL-Current/ARQ-earl-fed-2012-08-06.ttl
+http://people.apache.org/~andy/SPARQL-EARL-Current/ARQ-earl-csv-2012-02-01.ttl
+http://people.apache.org/~andy/SPARQL-EARL-Current/Fuseki-GSP-earl-2012-11-26.ttl
+http://people.apache.org/~andy/SPARQL-EARL-Current/Fuseki-earl-2012-09-25.ttl
 
 # ARQ-Inference
 http://arq-inference.googlecode.com/svn/ARQ_Inference/ARQ_Entailment_ImplRep.ttl
@@ -45,7 +40,11 @@ http://www.openrdf.org/earl/sesame-sparql11-earl.ttl
 # Leviathan/dotNetRDF
 # http://www.dotnetrdf.org/downloads/earl-sparql11-v060-2012-02-07.ttl
 # http://www.dotnetrdf.org/downloads/earl-sparql11-v072-2012-09-13.ttl
-http://www.dotnetrdf.org/downloads/earl-sparql11-v072-2012-09-14.ttl
+# http://www.dotnetrdf.org/downloads/earl-sparql11-v072-2012-09-14.ttl
+# http://www.dotnetrdf.org/downloads/earl-sparql11-v080-2012-11-09.ttl
+http://www.dotnetrdf.org/downloads/earl-sparql11-v080-2012-11-21.ttl
+http://www.dotnetrdf.org/downloads/earl-sparql11-sd-v080-2012-11-09.ttl
+http://www.dotnetrdf.org/downloads/earl-sparql11-protocol-v080-2012-11-21.ttl
 
 # HermiT
 http://owl-bgp.googlecode.com/svn/trunk/Sparqling_HermiT_ImplRep.ttl
