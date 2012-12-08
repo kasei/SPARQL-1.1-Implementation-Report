@@ -55,11 +55,13 @@ http://clarkparsia.com/2012/stardog/stardog_entailment_regime_report.ttl
 # rdf-lib
 https://raw.github.com/gromgull/rdflib-sparql/master/test_reports/earl_latest.ttl
 
+# Corese
+http://wimmics.inria.fr/doc/soft/corese/earl.ttl
+
 # Missing implementations:
 # 4store/5store
 # AllegroGraph
 # Anzo Glitter
-# Corese
 # Dydra
 # Mulgara
 # Virtuoso
